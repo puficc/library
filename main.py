@@ -2,7 +2,6 @@ from flask import Flask, request, url_for, render_template
 import requests
 import sqlite3
 import sys
-import xlsxwriter, xlrd
 
 email, name, surname, age, sex, choice = '', '', '', 0, '', ''
 for_stat = []
@@ -42,9 +41,6 @@ class Work_with_database:
 
     def stat(self):
         try:
-            workbook = xlsxwriter.Workbook('diag_stat.xlsx')
-            worksheet = workbook.add_worksheet()
-
             con = sqlite3.connect("users.db")
             cur = con.cursor()
             kol_first = cur.execute("""SELECT category FROM web_users
@@ -58,16 +54,7 @@ class Work_with_database:
 
             self.data = [len(kol_first), len(kol_second), len(kol_third), len(kol_fourth)]
 
-            worksheet.write_column('A1', self.data)
-
-            chart = workbook.add_chart({'type': 'round'})
-            chart.add_series({'values': f'=Sheet1!A1:A4'})
-
-            worksheet.insert_chart('C1', chart)
-            with open('static/img/statistic.jpg', 'wb') as file:
-                file.write(xlrd.get_value('C1'))
-
-            workbook.close()
+            return True
         except Exception as ex:
             print(ex)
 
@@ -165,8 +152,11 @@ def hello():
         flag = False
         try:
             Work_with_database(email, name, surname, age, sex, choice)
-        except sqlite3.IntegrityError:
-            flag = True
+        except sqlite3.IntegrityError as er:
+            if er:
+                flag = True
+            else:
+                flag = False
         title = 'Наши предложения'
         with open(f'{files[choice]}', encoding='UTF-8', mode='r') as f:
             for i in f.readlines():
@@ -196,7 +186,10 @@ def where():
 @app.route('/help')
 def help():
     title = 'Помощь/руководство'
-    return render_template('help.html', title=title)
+    with open('help.txt', encoding='UTF-8', mode='r') as f:
+        for i in f.readlines():
+            text.append(i)
+    return render_template('help.html', title=title, text=text)
 
 
 @app.route('/test', methods=['POST', 'GET'])
@@ -251,6 +244,8 @@ def stat():
     title = 'Немного статистики сайта'
     h1_p = 'На этой странице представлена статистика нашего сайта'
     print(result)
+    first_param = f'Чаще всего ищут литературу {popular}'
+    second_param = f'Наименее популярный раздел {no_popular}'
     return render_template('stat.html', title=title, h1_p=h1_p)
 
 

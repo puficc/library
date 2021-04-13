@@ -8,7 +8,7 @@ for_stat = []
 text = []
 files = {'для начальных классов': 'kids.txt', 'для подготовки к огэ': 'oge.txt',
          'для подготовки к егэ': 'ege.txt', 'что-то для души': 'must_read.txt'}
-
+popular, no_popular = '', ''
 app = Flask(__name__)
 
 
@@ -40,23 +40,20 @@ class Work_with_database:
         con.close()
 
     def stat(self):
-        try:
-            con = sqlite3.connect("users.db")
-            cur = con.cursor()
-            kol_first = cur.execute("""SELECT category FROM web_users
+        self.data = []
+        con = sqlite3.connect("users.db")
+        cur = con.cursor()
+        kol_first = cur.execute("""SELECT category FROM web_users
                                         WHERE category = 1""")
-            kol_second = cur.execute("""SELECT category FROM web_users
+        kol_second = cur.execute("""SELECT category FROM web_users
                                         WHERE category = 2""")
-            kol_third = cur.execute("""SELECT category FROM web_users
+        kol_third = cur.execute("""SELECT category FROM web_users
                                         WHERE category = 3""")
-            kol_fourth = cur.execute("""SELECT category FROM web_users
+        kol_fourth = cur.execute("""SELECT category FROM web_users
                                         WHERE category = 4""")
+        print(type(kol_first))
+        self.data = [len(kol_first), len(kol_second), len(kol_third), len(kol_fourth)]
 
-            self.data = [len(kol_first), len(kol_second), len(kol_third), len(kol_fourth)]
-
-            return True
-        except Exception as ex:
-            print(ex)
 
 
 @app.route('/hello', methods=['POST', 'GET'])
@@ -243,10 +240,9 @@ def stat():
     result = Work_with_database.stat
     title = 'Немного статистики сайта'
     h1_p = 'На этой странице представлена статистика нашего сайта'
-    print(result)
     first_param = f'Чаще всего ищут литературу {popular}'
     second_param = f'Наименее популярный раздел {no_popular}'
-    return render_template('stat.html', title=title, h1_p=h1_p)
+    return render_template('stat.html', title=title, h1_p=h1_p, first_param=first_param, second_param=second_param)
 
 
 if __name__ == '__main__':

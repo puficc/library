@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Arimo');
+.top-menu {
+  position: relative;
+}
+.menu-main {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-main:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.one-item {float: left;}
+.two-item {float: left;}
+.three-item {float: left;}
+.four-item {float: left;}
+.five-item {float: left;}
+.menu-main a {
+  background: #e8e8e9;
+  text-decoration: none;
+  display: block;
+  line-height: 100%;
+  padding: 20px 15px;
+  font-size: 23px;
+  letter-spacing: 4px;
+  font-family: 'Arimo', sans-serif;
+  font-weight: bold;
+  color: white;
+  transition: .2s linear;
+}
+.one-item a:hover{
+	background: #EA4335;
+}
+.two-item a:hover{
+	background: #34A853;
+}
+.three-item a:hover{
+	background: #FBBC05;
+}
+.four-item  a:hover{
+	background: #4285F4;
+}
+.five-item a:hover{
+	background: #34A853;
+}
+@media (max-width: 900px) {
+.menu-main {
+  padding-top: 90px;
+  text-align: center;
+}
+.menu-main li {
+  float: none;
+  display: inline-block;
+}
+.menu-main a {
+  line-height: normal;
+  padding: 10px 15px;
+  font-size: 20px;
+ }
+}
+h1, p {text-align: center;
+}
